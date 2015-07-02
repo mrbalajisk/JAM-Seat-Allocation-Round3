@@ -28,8 +28,9 @@ public class Allocation{
 	private boolean SuperNumeriReduced = false;
 	public static boolean printAllocation = false;
 	public static boolean printTable = false;
-	public static String  round = "round2";
+	public static String  round = "round3";
 
+	static private Map<String, String> applicantInProgramDraft = new TreeMap<String, String>();
 	static private Map<String, QuotaReadjust> readjustQuotas = new HashMap<String, QuotaReadjust>();
 	static private Map<String, Draft> draftAllocation =  new TreeMap<String, Draft>();
 	static private Map<String, LastRoundApplicant> lastRoundAllocation =  new TreeMap<String, LastRoundApplicant>();
@@ -95,7 +96,9 @@ public class Allocation{
 
 				String applicant = tokens[0].trim();		
 				String program = tokens[1].trim();		
+				applicantInProgramDraft.put( applicant, program );
 				Draft draft = draftAllocation.get( program );
+
 				if( draft == null ){
 					draft = new Draft( program );
 				}
@@ -550,70 +553,88 @@ public class Allocation{
 
 	boolean allocate(String type, Course course, Applicant applicant, int choiceNo, List<FreeSeat> freeSeats){
 
-		Quota quota = course.quotas.get( type );
+			Quota quota = course.quotas.get( type );
 
-		/* seat avlibility */ 
+			/* seat avlibility */ 
 
-		if( ( quota.seat - quota.allocated )  > 0 ){             
+			if( ( quota.seat - quota.allocated )  > 0 ){             
 
-			if( applicant.allocatedQuota != null ){
+					if( applicant.allocatedQuota != null ){
 
-				freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
+							freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
 
+					}
+
+					quota.allocate( applicant );
+
+					applicant.allocatedQuota = quota;
+
+					applicant.isAllocated = true;
+
+					applicant.isSupernumeri = false;
+
+					if( applicant.autoUpgrade ){
+
+							if(	applicant.allocatedChoice > choiceNo){			
+
+									applicant.acceptancePath = null;	
+									applicant.declarationPath = null;
+									applicant.undertakingPath = null;	
+
+									applicant.isProvisional = false;
+									applicant.lastRoundSeat = false;
+									applicant.isSubmitted = false;
+
+									if( applicant.statusId == 4)
+											applicant.statusId = 3;   
+									else if( applicant.statusId != 3 )
+											applicant.statusId = 1;
+							}
+
+							applicant.allocatedChoice = choiceNo;
+					}
+					return true;
 			}
 
-			quota.allocate( applicant );
+			/* Supernumeri case*/
 
-			applicant.allocatedQuota = quota;
+			if( flagSuperNumeri ){
 
-			applicant.isAllocated = true;
+					if( ( ( quota.seat - quota.allocated )  <= 0 ) && ( quota.closingRank != 0 ) 
+									&& (quota.closingRank >= applicant.ranks.get( quota.paper ).rank ) ){      
+							if( applicant.allocatedQuota != null ){
+									freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
+							}
 
-			applicant.isSupernumeri = false;
+							quota.allocate( applicant );
+							applicant.allocatedQuota = quota;
+							applicant.isAllocated = true;
+							applicant.isSupernumeri = true;
 
-			if( applicant.autoUpgrade ){
-				
-				if(	applicant.allocatedChoice > choiceNo){			
+							if( applicant.autoUpgrade ){
 
-					applicant.acceptancePath = null;	
-					applicant.declarationPath = null;
-					applicant.undertakingPath = null;	
+									if(	applicant.allocatedChoice > choiceNo){			
 
-					applicant.isProvisional = false;
-					applicant.lastRoundSeat = false;
-					applicant.isSubmitted = false;
+											applicant.acceptancePath = null;	
+											applicant.declarationPath = null;
+											applicant.undertakingPath = null;	
 
-                    if( applicant.statusId == 4)
-                         applicant.statusId = 3;   
-                    else if( applicant.statusId != 3 )
-					    applicant.statusId = 1;
-			    }
+											applicant.isProvisional = false;
+											applicant.lastRoundSeat = false;
+											applicant.isSubmitted = false;
 
-				applicant.allocatedChoice = choiceNo;
-			}
-			return true;
-		}
+											if( applicant.statusId == 4)
+													applicant.statusId = 3;   
+											else if( applicant.statusId != 3 )
+													applicant.statusId = 1;
+									}
 
-		/* Supernumeri case*/
-
-		if( flagSuperNumeri ){
-
-			if( ( ( quota.seat - quota.allocated )  <= 0 ) && ( quota.closingRank != 0 ) 
-					&& (quota.closingRank >= applicant.ranks.get( quota.paper ).rank ) ){      
-				if( applicant.allocatedQuota != null ){
-					freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
-				}
-
-				quota.allocate( applicant );
-				applicant.allocatedQuota = quota;
-				applicant.isAllocated = true;
-				applicant.allocatedChoice = choiceNo;
-				applicant.isSupernumeri = true;
-				return true;
-			}   
-
-		}	
-
-		return false;    
+									applicant.allocatedChoice = choiceNo;
+									return true;
+							}   
+					}
+			}	
+			return false;    
 	}
 
 	boolean allocation(String paper, List<Applicant> applicants, Map<String, Course> courses){
@@ -836,9 +857,40 @@ public class Allocation{
 	}
 
 
+	void obcSeatConversion(){
+
+		Set<String>  papers = coursesMap.keySet();
+
+		for(String paper: papers){
+
+			Map<String, Course>  courses = coursesMap.get(paper);
+			Set<String> programCodes = courses.keySet();
+			for(String programCode: programCodes){
+
+				Course course = courses.get( programCode );
+
+				if( course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated > 0 ){
+
+					System.err.println(paper+" "+programCode+" OBC "+(course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated) );
+					System.out.println(paper+" "+programCode+" OBC "+(course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated) );
+
+					course.quotas.get("GEN").seat += ( course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated );
+					course.quotas.get("GEN").originalSeat += ( course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated );
+
+					course.quotas.get("OBC").seat = 0;
+
+				}
+
+			}
+
+		} 
+
+	}
+
 	void pwdSeatConversion(){
 
 		Set<String>  papers = coursesMap.keySet();
+
 		for(String paper: papers){
 
 			Map<String, Course>  courses = coursesMap.get(paper);
@@ -961,6 +1013,10 @@ public class Allocation{
 
 		paperWiseallocation();
 
+		obcSeatConversion();
+
+		paperWiseallocation();
+
 		if( SuperNumeriReduced && readjustment() ){
 			allocation( iterration + 1 ); 	
 		}
@@ -982,8 +1038,8 @@ public class Allocation{
 
 			}
 			i++;
-			System.err.println("All-paper-allocation-Iteration: "+i);
 
+			System.err.println("All-paper-allocation-Iteration: "+i);
 			System.out.println("All-paper-allocation-Iteration: "+i);
 		}
 	}
@@ -991,6 +1047,7 @@ public class Allocation{
 	private void notInDraft(){
 
 		List<Applicant> applicants = allocationDetails.allocatedApplicants;
+
 		Applicant.printHeader3();
 
 		for(Applicant applicant: applicants){
@@ -1000,11 +1057,22 @@ public class Allocation{
 			Draft draft = draftAllocation.get( program );
 
 			if( draft == null ){
+
 				System.out.println("No Draft Found for: "+program);
 				System.err.println("No Draft Found for: "+program);
+
 			}else{
-				if( ! draft.applicants.contains( applicant.applicationId ) ){
-					draft.newapplicants.add( applicant.applicationId );        
+
+				if(! draft.applicants.contains( applicant.applicationId ) ){
+
+					 draft.newapplicants.add( applicant.applicationId );        
+					 program = applicantInProgramDraft.get( applicant.applicationId );
+					 System.out.println("Program: "+program);
+
+					 if( program != null ){ 	
+					 	draft = draftAllocation.get( program );
+					 	draft.moveout.add( applicant.applicationId );
+					}
 					applicant.print3();
 				}
 			}
@@ -1015,20 +1083,33 @@ public class Allocation{
 		for(String program: programs){
 
 			List<String> napplicants =  draftAllocation.get( program ).newapplicants;
-			if( napplicants.size() > 0 ){
-				System.out.print(program+": ");
+			List<String> mapplicants =  draftAllocation.get( program ).moveout;
+
+			if( napplicants.size() > 0 || mapplicants.size() > 0 ){
+
+				System.out.print(program+": [IN]> ");
 				boolean flag = true;
 				for(String applicant: napplicants){
 					if( flag )
 						System.out.print(applicant);
 					else
 						System.out.print(", "+applicant);
-
 					flag = false;    
 					count++;    
 				}   
-				System.out.println(); 
+				System.out.print(" | [OUT]> ");
+				for(String applicant: mapplicants){
+					if( flag )
+						System.out.print(applicant);
+					else
+						System.out.print(", "+applicant);
+					flag = false;    
+				}
+				System.out.println();
+				 
 			}
+
+			
 		}    
 
 		System.out.println("Total "+count+" Not in last-draft Allocation" );

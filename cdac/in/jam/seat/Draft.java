@@ -8,10 +8,15 @@ public class Draft{
 		String program;
 		List<String> applicants;	
 		List<String> newapplicants;	
+		List<String> moveout;
 
 		Draft(String program){
+
 			this.program = program;
+
 			applicants = new ArrayList<String>();
 		    newapplicants = new ArrayList<String>();	
+			moveout = new ArrayList<String>();
+
 		}			
 }  
