@@ -248,11 +248,14 @@ public class Allocation{
 
 				/* Foreign National Candidate */
 
+				
+				/*
 				if( applicationId.equals("M104H15") ){	
 					System.out.println("Foreign candidate :["+applicationId+"] Not consider for Current Round Allocation\n");
 					System.err.println("Foreign candidate :["+applicationId+"] Not consider for Current Round Allocation\n");
 					continue;
 				}
+				*/
 
 				String regId1 = tokens[1].trim();
 				String regId2 = tokens[2].trim();
@@ -1067,7 +1070,6 @@ public class Allocation{
 
 					 draft.newapplicants.add( applicant.applicationId );        
 					 program = applicantInProgramDraft.get( applicant.applicationId );
-					 System.out.println("Program: "+program);
 
 					 if( program != null ){ 	
 					 	draft = draftAllocation.get( program );
@@ -1150,7 +1152,7 @@ public class Allocation{
 				i++;
 			}
 
-			allocation.readDraft("./data/round1.csv", true);
+			allocation.readDraft("./data/round2.csv", true);
 			allocation.read();
 			allocation.allocation( 1 );    
 			System.out.println("------------------- Allocation Verification ----------------");

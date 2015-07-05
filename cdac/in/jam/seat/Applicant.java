@@ -161,30 +161,30 @@ public class Applicant{
 	}
 
 	static void printHeaderTable(){
-		System.out.println("application_id,seat_allotted,paper,quota,choice_no,round,is_submitted,status_id,bank_challan_path,is_provisional,declaration_form_path,undertaking_form_path,auto_upgrade,acceptance_doc_path");
+		System.out.println("application_id,seat_allotted,paper,quota,choice_no,round,is_submitted,status_id,bank_challan_path,is_provisional,declaration_form_path,undertaking_form_path,auto_upgrade,acceptance_doc_path,isSupernumeri");
 	}
 
 	void printAllocationTable(String round){
 
 		System.out.print(applicationId+","+allocatedQuota.programCode+","+allocatedQuota.paper+","+allocatedQuota.printname+","+(allocatedChoice+1));
-		System.out.println(","+round+","+isSubmitted+","+statusId+","+challanPath+","+isProvisional+","+declarationPath+","+undertakingPath+","+autoUpgrade+","+acceptancePath);
+		System.out.println(","+round+","+isSubmitted+","+statusId+","+challanPath+","+isProvisional+","+declarationPath+","+undertakingPath+","+autoUpgrade+","+acceptancePath+","+isSupernumeri);
 
 	}
 
 
 	static void printHeaderAllocation(){
-		System.out.println("application_id, Seat_allotted, Paper, Quota, Choice_no, Rank, Marks, Round, isProvisional, StatusId, autoUpgrade, acceptancePath, declarationPath, undertakingPath, challanPath");
+		System.out.println("application_id, Seat_allotted, Paper, Quota, Choice_no, Rank, Marks, Round, isProvisional, StatusId, autoUpgrade, acceptancePath, declarationPath, undertakingPath, challanPath, isSupernumeri");
 	}
 
 	void printAllocation(String round){
 
 		System.out.print(applicationId);
-		System.out.print(", "+allocatedQuota.programCode+", "+allocatedQuota.paper+", "+allocatedQuota.printname+", "+( allocatedChoice + 1 )); 	   System.out.println(", "+ranks.get( allocatedQuota.paper ).rank+", "+ranks.get( allocatedQuota.paper ).marks+", "+round+", "+isProvisional+", "+ statusId+", "+autoUpgrade+", "+acceptancePath+", "+declarationPath+", "+undertakingPath+", "+challanPath);
+		System.out.print(", "+allocatedQuota.programCode+", "+allocatedQuota.paper+", "+allocatedQuota.printname+", "+( allocatedChoice + 1 )); 	   System.out.println(", "+ranks.get( allocatedQuota.paper ).rank+", "+ranks.get( allocatedQuota.paper ).marks+", "+round+", "+isProvisional+", "+ statusId+", "+autoUpgrade+", "+acceptancePath+", "+declarationPath+", "+undertakingPath+", "+challanPath+", "+isSupernumeri);
 
 	}
 
 	static void printHeader1(){
-		System.out.println("ApplicationId, RegistrationId, Paper, Paper-Rank, Paper-Mark, Category, PwD-status, Original-Choice, ValidChoices, StatusId, Auto-Upgrade");
+		System.out.println("ApplicationId, RegistrationId, Paper, Paper-Rank, Paper-Mark, Category, PwD-status, Original-Choice, ValidChoices, StatusId, Auto-Upgrade, isSupernumeri");
 	}	
 
 	void print1(String paper){
@@ -197,21 +197,21 @@ public class Applicant{
 				System.out.print(validChoices[i].trim());	
 			}
 		}
-		System.out.println(", "+statusId+", "+autoUpgrade);	
+		System.out.println(", "+statusId+", "+autoUpgrade+", "+isSupernumeri);	
 	}
 
 	static void printHeader3(){
-		System.out.println("Application_id, Seat_allotted, Paper, Quota, Choice_no, Rank, Marks, StatusId, Auto Upgrade");
+		System.out.println("Application_id, Seat_allotted, Paper, Quota, Choice_no, Rank, Marks, StatusId, Auto Upgrade, isSupernumeri");
 	}
 
 	void print3(){
 		System.out.print(applicationId);
 		System.out.print(", "+allocatedQuota.programCode+", "+allocatedQuota.paper+", "+allocatedQuota.printname+", "+( allocatedChoice + 1 )); 	
-		System.out.println(", "+ranks.get( allocatedQuota.paper ).rank+", "+ranks.get( allocatedQuota.paper ).marks+", "+statusId+", "+autoUpgrade); 	
+		System.out.println(", "+ranks.get( allocatedQuota.paper ).rank+", "+ranks.get( allocatedQuota.paper ).marks+", "+statusId+", "+autoUpgrade+", "+isSupernumeri); 	
 	}
 
 	static void header(){
-		System.out.println("ApplicationId, Allocated-Paper, Allocated-Program, Allocated-Quota, Allocated-Program-Choice, Allocated-Paper-Rank, Allocated-Paper-Mark,  Category, PwD-status, Reg1-ID, Reg1-Rank, Reg1-Marks, Reg2-ID, Reg2-Rank2,  Reg2-Marks,  ValidChoices, Original-Choice, statusId, AutoUpgrade, Quota-Change, Improve-Choice");
+		System.out.println("ApplicationId, Allocated-Paper, Allocated-Program, Allocated-Quota, Allocated-Program-Choice, Allocated-Paper-Rank, Allocated-Paper-Mark,  Category, PwD-status, Reg1-ID, Reg1-Rank, Reg1-Marks, Reg2-ID, Reg2-Rank2,  Reg2-Marks,  ValidChoices, Original-Choice, statusId, AutoUpgrade, Quota-Change, Improve-Choice, isSupernumeri");
 	}
 	
 
@@ -264,7 +264,7 @@ public class Applicant{
 		}else{
 			System.out.print("NA, NA");
 		}
-		System.out.println();
+		System.out.println(", "+isSupernumeri);
 
 	}
 }
