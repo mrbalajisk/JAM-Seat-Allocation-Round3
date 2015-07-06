@@ -68,7 +68,7 @@ public class Quota{
 	}
 
 	public void print(){
-		System.out.print(", "+paper+"#"+originalSeat+"#"+allocated+"#"+openingRank+"-"+closingRank+"#"+supernumeri); 
+		System.out.print(", "+paper+"#"+originalSeat+"#"+seat+"#"+allocated+"#"+openingRank+"-"+closingRank+"#"+supernumeri); 
 		//System.out.print(", "+(originalSeat - allocated) ); 
 	}
 
