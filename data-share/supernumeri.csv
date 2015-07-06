@@ -1,0 +1,12 @@
+ApplicationId, Allocated-Paper, Allocated-Program, Allocated-Quota, Allocated-Program-Choice, Allocated-Paper-Rank, Allocated-Paper-Mark, isSupernumeri
+M113A37, BL, 1101, GEN, 4, 6, 63.67, true
+M103N27, CY, 1401, GEN, 1, 185, 55, true
+M112C66, MA, 1804, GEN, 3, 196, 38.33, true
+M115Y15, PH, 1903, GEN, 8, 316, 33.33, true
+M112Z30, PH, 2202, GEN, 13, 318, 33.33, true
+M103Q75, PH, 2402, GEN, 11, 335, 32.67, true
+M108J76, MA, 1402, OBC, 7, 438, 31.33, true
+M103N43, CY, 1701, OBC, 1, 537, 43.67, true
+M108G65, MA, 2002, SC, 8, 1423, 20.33, true
+M108S40, PH, 2402, SC, 2, 1608, 18.33, true
+M111A61, PH, 2003, SC, 7, 1651, 18.33, true

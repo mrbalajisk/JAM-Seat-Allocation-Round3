@@ -32,6 +32,7 @@ public class Quota{
 		this.supernumeri = 0;
 		this.openingRank = 0;
 		this.closingRank = 0; 
+
 		allocatedCandidate = new ArrayList<Applicant>();    
 	}
 
@@ -40,7 +41,7 @@ public class Quota{
 		allocatedCandidate.add( applicant ); 
 		allocated++;
 
-		if( allocated > seat && !applicant.lastRoundSeat ){
+		if( allocated > seat ){
 			applicant.isSupernumeri = true;
 			supernumeri++;
 		}    
@@ -49,14 +50,16 @@ public class Quota{
 	}
 
 	public void free(Applicant applicant){
-
+		applicant.isSupernumeri = false;
 		allocatedCandidate.remove( applicant ); 
 		allocated--;
 
 		if( allocated <= seat ){
 			supernumeri = 0;
+			for(Applicant app: allocatedCandidate){
+				app.isSupernumeri = false;
+			}			
 		}    
-
 		updateOpeningClosingRank();
 	}
 
