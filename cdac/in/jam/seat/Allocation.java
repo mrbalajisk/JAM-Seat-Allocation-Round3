@@ -364,8 +364,8 @@ public class Allocation{
 								applicant.isSubmitted = true;
 
 								applicant.lastRoundSeat = true;
-
 								quota.allocate( applicant );
+
 
 								applicant.allocatedQuota = quota;
 								applicant.lastRoundQuota = quota.name;
@@ -387,7 +387,9 @@ public class Allocation{
 										quota.seat++;
 										Quota qu = course.quotas.get( quotaType+"PWD" );					
 										qu.seat--;
-										//	System.out.println("Converted Seat form Program name:"+ course.programCode+" quotaType: "+quotaType+" From: "+quotaType+"PWD");	
+
+										qu.updateSupernumeriStatus();
+										quota.updateSupernumeriStatus();
 								}
 
 						}
@@ -488,9 +490,7 @@ public class Allocation{
 								e.printStackTrace();
 						}
 				}
-
 		}
-
 
 		void detailsAllocation(){
 
@@ -562,9 +562,7 @@ public class Allocation{
 				if( ( quota.seat - quota.allocated )  > 0 ){             
 
 						if( applicant.allocatedQuota != null ){
-
 								freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
-
 						}
 
 						quota.allocate( applicant );
@@ -604,6 +602,10 @@ public class Allocation{
 
 						if( ( ( quota.seat - quota.allocated )  <= 0 ) && ( quota.closingRank != 0 ) 
 										&& (quota.closingRank >= applicant.ranks.get( quota.paper ).rank ) ){      
+								
+								if( applicant.allocatedQuota != null ){
+									freeSeats.add( new FreeSeat( applicant.allocatedQuota, applicant ) );
+								}
 
 								quota.allocate( applicant );
 								applicant.allocatedQuota = quota;
@@ -626,10 +628,9 @@ public class Allocation{
 												else if( applicant.statusId != 3 )
 														applicant.statusId = 1;
 										}
-
 										applicant.allocatedChoice = choiceNo;
-										return true;
 								}   
+								return true;
 						}
 				}	
 				return false;    
@@ -684,7 +685,7 @@ public class Allocation{
 				System.err.println("Freeing-Seats: "+paper+"=> "+freedSeats.size() );
 
 				for(FreeSeat freeSeat: freedSeats){
-						freeSeat.free();
+					freeSeat.free();
 				}
 
 				freedSeats = null;
@@ -882,8 +883,10 @@ public class Allocation{
 										System.err.println(paper+" "+programCode+" OBC "+(course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated) );
 										System.out.println(paper+" "+programCode+" OBC "+(course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated) );
 										course.quotas.get("GEN").seat += ( course.quotas.get("OBC").seat - course.quotas.get("OBC").allocated );
+										course.quotas.get("GEN").updateSupernumeriStatus();
 
 										course.quotas.get("OBC").seat = course.quotas.get("OBC").allocated;
+										course.quotas.get("OBC").updateSupernumeriStatus();
 
                                         convert = true;
 								}
@@ -907,8 +910,10 @@ public class Allocation{
 										System.err.println(paper+" "+programCode+" GENPWD "+(course.quotas.get("GENPWD").seat - course.quotas.get("GENPWD").allocated) );
 										System.out.println(paper+" "+programCode+" GENPWD "+(course.quotas.get("GENPWD").seat - course.quotas.get("GENPWD").allocated) );
 										course.quotas.get("GEN").seat += ( course.quotas.get("GENPWD").seat - course.quotas.get("GENPWD").allocated );
+										course.quotas.get("GEN").updateSupernumeriStatus();
 
 										course.quotas.get("GENPWD").seat = course.quotas.get("GENPWD").allocated;
+
                                         convert = true;    
 
 								}
@@ -917,6 +922,7 @@ public class Allocation{
 										System.err.println(paper+" "+programCode+" OBCPWD "+(course.quotas.get("OBCPWD").seat - course.quotas.get("OBCPWD").allocated) );
 										System.out.println(paper+" "+programCode+" OBCPWD "+(course.quotas.get("OBCPWD").seat - course.quotas.get("OBCPWD").allocated) );
 										course.quotas.get("OBC").seat += ( course.quotas.get("OBCPWD").seat - course.quotas.get("OBCPWD").allocated );
+										course.quotas.get("OBC").updateSupernumeriStatus();
 
 										course.quotas.get("OBCPWD").seat = course.quotas.get("OBCPWD").allocated; 
                                         convert = true;    
@@ -928,7 +934,10 @@ public class Allocation{
 										System.out.println(paper+" "+programCode+" SCPWD "+(course.quotas.get("SCPWD").seat - course.quotas.get("SCPWD").allocated) );
 										course.quotas.get("SC").seat += ( course.quotas.get("SCPWD").seat - course.quotas.get("SCPWD").allocated );
 
+										course.quotas.get("SC").updateSupernumeriStatus();
+
 										course.quotas.get("SCPWD").seat = course.quotas.get("SCPWD").allocated;
+										
                                         convert = true;    
 
 								}
@@ -937,7 +946,7 @@ public class Allocation{
 										System.err.println(paper+" "+programCode+" STPWD "+(course.quotas.get("STPWD").seat - course.quotas.get("STPWD").allocated) );
 										System.out.println(paper+" "+programCode+" STPWD "+(course.quotas.get("STPWD").seat - course.quotas.get("STPWD").allocated) );
 										course.quotas.get("ST").seat += ( course.quotas.get("STPWD").seat - course.quotas.get("STPWD").allocated );
-
+										course.quotas.get("ST").updateSupernumeriStatus();
 										course.quotas.get("STPWD").seat = course.quotas.get("STPWD").allocated;
                                         convert = true;    
 								}
@@ -1174,8 +1183,6 @@ public class Allocation{
 
 						allocation.readDraft("./data/round2.csv", true);
 						allocation.read();
-						//allocation.printCourse();
-						//System.out.println("-----------------------------------------------------------");
 						allocation.allocation( 1, isSuperNumeri, obcConvert );    
 						System.out.println("------------------- Allocation Verification ----------------");
 						allocation.allocationVerification();

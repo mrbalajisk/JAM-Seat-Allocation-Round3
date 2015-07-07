@@ -40,7 +40,6 @@ public class Quota{
 
 		allocatedCandidate.add( applicant ); 
 		allocated++;
-
 		if( allocated > seat ){
 			applicant.isSupernumeri = true;
 			supernumeri++;
@@ -49,16 +48,35 @@ public class Quota{
 		updateOpeningClosingRank();
 	}
 
-	public void free(Applicant applicant){
-		applicant.isSupernumeri = false;
-		allocatedCandidate.remove( applicant ); 
-		allocated--;
+
+	void updateSupernumeriStatus(){
 
 		if( allocated <= seat ){
 			supernumeri = 0;
 			for(Applicant app: allocatedCandidate){
 				app.isSupernumeri = false;
 			}			
+		} 
+		updateOpeningClosingRank();
+	}
+	
+
+	public void free(Applicant applicant){
+
+		allocatedCandidate.remove( applicant ); 
+		allocated--;
+
+		if( allocated <= seat ){
+
+			supernumeri = 0;
+
+			for(Applicant app: allocatedCandidate){
+
+				if( app.allocatedQuota.programCode.equals( programCode ) && app.allocatedQuota.name.equals(name)  ){
+					app.isSupernumeri = false;
+				}
+			}
+
 		}    
 		updateOpeningClosingRank();
 	}
@@ -69,7 +87,6 @@ public class Quota{
 
 	public void print(){
 		System.out.print(", "+paper+"#"+originalSeat+"#"+seat+"#"+allocated+"#"+openingRank+"-"+closingRank+"#"+supernumeri); 
-		//System.out.print(", "+(originalSeat - allocated) ); 
 	}
 
 	void updateOpeningClosingRank(){
@@ -82,10 +99,8 @@ public class Quota{
 			this.closingRank = allocatedCandidate.get( allocatedCandidate.size() - 1).ranks.get( paper ).rank;
 		}
 		else{
-
 			this.openingRank = 0;
 			this.closingRank = 0; 
-
 		}
 	}
 }
