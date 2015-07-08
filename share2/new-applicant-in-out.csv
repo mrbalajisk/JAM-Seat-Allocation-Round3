@@ -1,0 +1,11 @@
+
+Application_id, Seat_allotted, Paper, Quota, Choice_no, Rank, Marks, StatusId, Auto Upgrade, isSupernumeri
+M112F32, 1403, PH, GEN, 11, 253, 35.67, 3, true, false
+M101N14, 2103, PH, GEN, 3, 286, 34.33, 1, true, false
+
+---- New Applicant Program-wise ---
+1403: M112F32
+2103: M101N14
+
+---- Applicant Move out Program-wise ---
+2103: M112F32

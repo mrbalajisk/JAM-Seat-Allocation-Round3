@@ -1,0 +1,13 @@
+CY, Allocated: 442, Total: 1336
+PH, Allocated: 441, Total: 1288
+BT, Allocated: 76, Total: 712
+BL, Allocated: 11, Total: 656
+MA, Allocated: 399, Total: 1182
+GG, Allocated: 114, Total: 260
+MS, Allocated: 94, Total: 319
+-----------------------------------------------------------
+Total Seats Avilable (all programs): 1598
+Total Seats Avilable (After Seat Reduction Due to Supernemeri): GEN: 803, OBC: 403, SC: 238, ST: 128, GEN-PwD: 21, OBC-PwD: 4, SC-PwD: 1, ST-PwD: 0, TOTAL: 1598
+Total Allocation: 1577
+Total Not Allocation: 3723
+Total candidate: 5300
